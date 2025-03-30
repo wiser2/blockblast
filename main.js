@@ -361,14 +361,15 @@ function drawGhostPiece() {
         (mouseY >= y_offset && mouseY <= 8 - (piece.length - y_offset))
     ) {
         for (y = 0; y < piece.length; y++) {
-            for (x = 0; x < piece[0].length; x++) {
+            for (x = 0; x < piece[y].length; x++) {
                 if (board[mouseY + y - y_offset][mouseX + x - x_offset] != 1) {
-                    if (piece[x][y] == 1 && board[mouseY + y - y_offset][mouseX + x - x_offset] != 1) {
+                    console.log('piece', y, x, piece[y][x])
+                    if (piece[y][x] == 1 && board[mouseY + y - y_offset][mouseX + x - x_offset] != 1) {
                         board[mouseY + y - y_offset][mouseX + x - x_offset] = 2
-                    } else if (piece[x][y] == 0) {
+                    } else if (piece[y][x] == 0) {
                         board[mouseY + y - y_offset][mouseX + x - x_offset] = 0
                     }
-                    board[mouseY + y - y_offset][mouseX + x - x_offset] = piece[y][x] == 1 ? 2 : 0
+                    // board[mouseY + y - y_offset][mouseX + x - x_offset] = piece[y][x] == 1 ? 2 : 0
                 }
             }
         }
