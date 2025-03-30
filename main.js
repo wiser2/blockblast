@@ -320,7 +320,7 @@ allPieces = [
 
 queue = []
 
-piece = [...bigarrowNE]
+piece = []
 
 function generateQueue() {
     _ = [...allPieces]
