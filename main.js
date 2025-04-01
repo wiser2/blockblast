@@ -47,9 +47,9 @@ board = [
     [0, 0, 0, 0, 0, 0, 0, 0], 
     [0, 0, 0, 0, 0, 0, 0, 0], 
     [0, 0, 0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 0, 1, 0, 0, 0], 
-    [0, 0, 0, 0, 1, 0, 0, 0], 
-    [0, 0, 0, 0, 1, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 1, 1, 1, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0], 
     [0, 0, 0, 0, 0, 0, 0, 0], 
     [0, 0, 0, 0, 0, 0, 0, 0]
 ]
@@ -352,6 +352,10 @@ function drawQueue() {
 }
 
 function drawGhostPiece() {
+    board_with_ghost = [...board]
+    ghost_overlap = false
+    ghosted = Array()
+
     x_offset = Math.floor(piece[0].length / 2)
     y_offset = Math.floor(piece.length / 2)
     ctx.strokeStyle = "#999999"
@@ -361,15 +365,29 @@ function drawGhostPiece() {
         (mouseY >= y_offset && mouseY <= 8 - (piece.length - y_offset))
     ) {
         for (y = 0; y < piece.length; y++) {
+            if (ghost_overlap) { break }
             for (x = 0; x < piece[y].length; x++) {
                 if (board[mouseY + y - y_offset][mouseX + x - x_offset] != 1) {
-                    if (piece[y][x] == 1 && board[mouseY + y - y_offset][mouseX + x - x_offset] != 1) {
+                    if (piece[y][x] == 1) {
                         board[mouseY + y - y_offset][mouseX + x - x_offset] = 2
+                        ghosted.push([mouseY + y - y_offset, mouseX + x - x_offset])
                     } else if (piece[y][x] == 0) {
                         board[mouseY + y - y_offset][mouseX + x - x_offset] = 0
                     }
+                } else {
+                    if (piece[y][x] == 1) {
+                        ghost_overlap = true
+                        break
+                    }
                 }
             }
+        }
+    }
+
+    console.log('ghost overlap', ghost_overlap)
+    if (ghost_overlap) {
+        for (i = 0; i < ghosted.length; i++) {
+            board[ghosted[i][0]][ghosted[i][1]] = 0
         }
     }
 }
