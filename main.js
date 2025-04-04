@@ -28,6 +28,9 @@ mouseY_last = 0
 mouseX_last_last = 0
 mouseY_last_last = 0
 
+piece_placed = false
+last_piece_chosen = 3
+
 function nothing(x) {
     return x
 }
@@ -48,7 +51,7 @@ board = [
     [0, 0, 0, 0, 0, 0, 0, 0], 
     [0, 0, 0, 0, 0, 0, 0, 0], 
     [0, 0, 0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 1, 1, 1, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0], 
     [0, 0, 0, 0, 0, 0, 0, 0], 
     [0, 0, 0, 0, 0, 0, 0, 0], 
     [0, 0, 0, 0, 0, 0, 0, 0]
@@ -304,6 +307,10 @@ r32 = [
     [1, 1, 1]
 ]
 
+empty_piece = [
+    [0]
+]
+
 allPieces = [
     v3, v4, v5, 
     h3, h4, h5, 
@@ -320,7 +327,7 @@ allPieces = [
 
 queue = []
 
-piece = []
+piece = empty_piece
 
 function generateQueue() {
     _ = [...allPieces]
@@ -475,6 +482,9 @@ function placePiece(e) {
         for (i = 0; i < changed.length; i++) {
             board[changed[i][0]][changed[i][1]] = 1
         }
+        piece_placed = true
+        piece = empty_piece
+        queue[last_piece_chosen] = empty_piece
     }
 
     console.log('overlap', overlap)
@@ -492,17 +502,24 @@ function choosePiece(e) {
     console.log('choose piece')
     if (e.offsetX / previewSize >= 15) {
         if (e.offsetY / previewSize >= 0 && e.offsetY / previewSize < 5.2) {
+            piece_placed = false
             console.log('top piece')
             piece = [...queue[0]]
+            last_piece_chosen = 0
         } else if (e.offsetY / previewSize >= 7 && e.offsetY / previewSize < 12) {
+            piece_placed = false
             console.log('middle piece')
             piece = [...queue[1]]
+            last_piece_chosen = 1
         } else if (e.offsetY / previewSize >= 14 && e.offsetY / previewSize < 19) {
+            piece_placed = false
             console.log('bottom piece')
             piece = [...queue[2]]
-
+            last_piece_chosen = 2
         }
     }
+    
+    
     console.log(e.offsetX / previewSize, e.offsetY / previewSize)
 }
 
@@ -536,6 +553,11 @@ drawGrid()
 generateQueue()
 
 function drawGraphics() {
+    if (queue[0] == empty_piece && queue[1] == empty_piece && queue[2] == empty_piece) {
+        console.log('need new queue')
+        generateQueue()
+    }
+    
     drawBoard()
 
     if (0 <= mouseX && mouseX < 8 && 0 <= mouseY && mouseY < 8) {
